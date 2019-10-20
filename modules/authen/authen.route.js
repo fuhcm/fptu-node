@@ -1,3 +1,8 @@
-const route = null;
+const express = require("express");
+const router = express.Router();
 
-module.exports = route;
+const { googleLoginHandler } = require("modules/authen/authen.handler");
+
+router.route("/google").post(googleLoginHandler);
+
+module.exports = router;
