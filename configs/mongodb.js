@@ -7,7 +7,7 @@ const [db, setDb] = useState(null);
 
 const initDB = async () => {
   try {
-    const client = await MongoClient.connect(url, {
+    const client = await MongoClient.connect(process.env.MONGODB_URI || url, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
