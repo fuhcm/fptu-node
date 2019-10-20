@@ -12,9 +12,12 @@ const initDB = async () => {
       useUnifiedTopology: true
     });
 
-    client.db.collection("confessions").createIndex({
-      content: "text"
-    });
+    client
+      .db()
+      .collection("confessions")
+      .createIndex({
+        content: "text"
+      });
 
     setDb(client.db(dbName));
     return true;
