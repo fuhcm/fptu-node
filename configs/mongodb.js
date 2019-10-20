@@ -1,5 +1,5 @@
 const MongoClient = require("mongodb").MongoClient;
-const url = "mongodb://localhost:27017";
+const url = "mongodb://localhost:27017/nodejs";
 const dbName = "nodejs";
 
 const useState = require("utils/closures/useState");
@@ -12,12 +12,9 @@ const initDB = async () => {
       useUnifiedTopology: true
     });
 
-    client
-      .db(dbName)
-      .collection("confessions")
-      .createIndex({
-        content: "text"
-      });
+    client.db.collection("confessions").createIndex({
+      content: "text"
+    });
 
     setDb(client.db(dbName));
     return true;
