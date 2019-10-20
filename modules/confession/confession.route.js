@@ -16,18 +16,20 @@ const {
   searchApprovedConfessions,
   createNewConfession,
   approveConfession,
-  rejectConfession
+  rejectConfession,
+  syncPushID
 } = require("modules/confession/confession.handler");
 
 router.route("/").get(jwtMiddleware, getAllConfessions);
 router.route("/overview").get(getOverview);
 router
-  .route("/sender_id")
+  .route("/myconfess")
   .post(confessionGetByValidator, getConfessionsBySenderID);
 router.route("/approved").get(getApprovedConfessions);
 router.route("/search").get(searchApprovedConfessions);
 router.route("/").post(confessionSendValidator, createNewConfession);
 router.route("/approve").put(jwtMiddleware, approveConfession);
 router.route("/reject").put(jwtMiddleware, rejectConfession);
+router.route("/sync").put(syncPushID);
 
 module.exports = router;

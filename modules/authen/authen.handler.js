@@ -8,15 +8,15 @@ const googleLoginHandler = async (req, res) => {
   const { email } = await verifyGoogleOAuth(token);
 
   const userCollection = db.collection("users");
-  const user = userCollection.findOne({ email });
+  const user = await userCollection.findOne({ email });
 
   const success = ({ email, nickname }) =>
-    res.send({ token: createJWT({ email, nickname }, null) });
+    res.send({ token: createJWT({ email, nickname }, null), email, nickname });
 
   const fail = () =>
     res.status(400).send({ message: "Invalid authentication token" });
 
-  user ? success(user) : fail();
+  user.email && user.nickname ? success(user) : fail();
 };
 
 module.exports = errorHandler({

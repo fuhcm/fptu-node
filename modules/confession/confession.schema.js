@@ -5,7 +5,9 @@ const confessionSendSchema = Joi.object({
   content: Joi.string()
     .min(10)
     .required(),
-  senderID: Joi.string().required()
+  senderID: Joi.string().required(),
+  pushID: [Joi.string().optional(), Joi.allow(null)],
+  captcha: Joi.string().required()
 });
 
 const confessionGetBySchema = Joi.object({

@@ -9,12 +9,11 @@ const constants = require("utils/constants/app.constant");
 
 const getAllConfessions = async (req, res) => {
   const confessionCollection = db.collection("confessions");
-  const { skip } = req.query;
+  const { load } = req.query;
   const allConfessions = await confessionCollection
     .find()
     .sort({ createdAt: -1 })
-    .skip(parseInt(skip) || 0)
-    .limit(10)
+    .limit(parseInt(load) || 10)
     .toArray();
 
   res.send(allConfessions);
@@ -30,26 +29,34 @@ const getOverview = async (_, res) => {
     .find({ status: 2 })
     .count();
 
-  res.send({ allConfessions, pendingConfession, rejectedConfession });
+  res.send({
+    total: allConfessions,
+    pending: pendingConfession,
+    rejected: rejectedConfession
+  });
 };
 
 const getConfessionsBySenderID = async (req, res) => {
   const confessionCollection = db.collection("confessions");
   const { senderID } = req.body;
+  const { load } = req.query;
   const confessions = await confessionCollection
     .find({ senderID })
     .sort({ createdAt: -1 })
+    .limit(parseInt(load) || 10)
     .limit(10)
     .toArray();
 
   res.send(confessions);
 };
 
-const getApprovedConfessions = async (_, res) => {
+const getApprovedConfessions = async (req, res) => {
   const confessionCollection = db.collection("confessions");
+  const { skip } = req.query;
   const confessions = await confessionCollection
     .find({ status: 1 })
     .sort({ createdAt: -1 })
+    .skip(parseInt(skip) || 0)
     .limit(10)
     .toArray();
 
@@ -59,18 +66,25 @@ const getApprovedConfessions = async (_, res) => {
 const searchApprovedConfessions = async (req, res) => {
   const confessionCollection = db.collection("confessions");
   const { keyword } = req.query;
-  const confessions = await confessionCollection
-    .find({
-      status: 1,
-      $text: {
-        $search: keyword
-      }
-    })
-    .sort({ createdAt: -1 })
-    .limit(50)
-    .toArray();
 
-  res.send(confessions);
+  const handleSearch = async keyword => {
+    const confessions = await confessionCollection
+      .find({
+        status: 1,
+        $text: {
+          $search: keyword
+        }
+      })
+      .sort({ createdAt: -1 })
+      .limit(50)
+      .toArray();
+
+    res.send(confessions);
+  };
+
+  keyword
+    ? handleSearch(keyword)
+    : res.status(400).send({ message: "Invalid keyword" });
 };
 
 const createNewConfession = async (req, res) => {
@@ -85,9 +99,9 @@ const createNewConfession = async (req, res) => {
   };
 
   const newConfessionFullfilled = {
+    ...defaultProperties,
     ...newConfession,
-    ...createdTimestamp(),
-    ...defaultProperties
+    ...createdTimestamp()
   };
 
   await confessionCollection.insertOne(newConfessionFullfilled);
@@ -154,6 +168,26 @@ const rejectConfession = async (req, res) => {
   res.status(value ? 200 : 422).send(value || { message: "Unable to update" });
 };
 
+const syncPushID = async (req, res) => {
+  const confessionCollection = db.collection("confessions");
+  const { senderID, pushID } = req.body;
+
+  const { value } = await confessionCollection.updateMany(
+    {
+      senderID
+    },
+    {
+      $set: {
+        pushID,
+        ...updatedTimestamp()
+      }
+    },
+    { new: true }
+  );
+
+  res.status(value ? 200 : 422).send(value || { message: "Unable to update" });
+};
+
 module.exports = errorHandler({
   getAllConfessions,
   getOverview,
@@ -162,5 +196,6 @@ module.exports = errorHandler({
   searchApprovedConfessions,
   createNewConfession,
   approveConfession,
-  rejectConfession
+  rejectConfession,
+  syncPushID
 });
