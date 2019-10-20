@@ -7,15 +7,30 @@ const {
 } = require("utils/parsers/timestamp");
 const constants = require("utils/constants/app.constant");
 
-const getAllConfessions = async (_, res) => {
+const getAllConfessions = async (req, res) => {
   const confessionCollection = db.collection("confessions");
+  const { skip } = req.query;
   const allConfessions = await confessionCollection
     .find()
     .sort({ createdAt: -1 })
+    .skip(parseInt(skip) || 0)
     .limit(10)
     .toArray();
 
   res.send(allConfessions);
+};
+
+const getOverview = async (_, res) => {
+  const confessionCollection = db.collection("confessions");
+  const allConfessions = await confessionCollection.find().count();
+  const pendingConfession = await confessionCollection
+    .find({ status: 0 })
+    .count();
+  const rejectedConfession = await confessionCollection
+    .find({ status: 2 })
+    .count();
+
+  res.send({ allConfessions, pendingConfession, rejectedConfession });
 };
 
 const getConfessionsBySenderID = async (req, res) => {
@@ -25,6 +40,34 @@ const getConfessionsBySenderID = async (req, res) => {
     .find({ senderID })
     .sort({ createdAt: -1 })
     .limit(10)
+    .toArray();
+
+  res.send(confessions);
+};
+
+const getApprovedConfessions = async (_, res) => {
+  const confessionCollection = db.collection("confessions");
+  const confessions = await confessionCollection
+    .find({ status: 1 })
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .toArray();
+
+  res.send(confessions);
+};
+
+const searchApprovedConfessions = async (req, res) => {
+  const confessionCollection = db.collection("confessions");
+  const { keyword } = req.query;
+  const confessions = await confessionCollection
+    .find({
+      status: 1,
+      $text: {
+        $search: keyword
+      }
+    })
+    .sort({ createdAt: -1 })
+    .limit(50)
     .toArray();
 
   res.send(confessions);
@@ -62,7 +105,10 @@ const approveConfession = async (req, res) => {
       .sort({ cfsID: -1 })
       .limit(1)
       .toArray();
-    return arrData[0].cfsID + 1 || new Error("Error when get latest cfsID");
+    return (
+      (arrData && arrData.length && arrData[0].cfsID + 1) ||
+      new Error("Error when get latest cfsID")
+    );
   };
   const newCfsID = await getLatestCfsID();
 
@@ -110,7 +156,10 @@ const rejectConfession = async (req, res) => {
 
 module.exports = errorHandler({
   getAllConfessions,
+  getOverview,
   getConfessionsBySenderID,
+  getApprovedConfessions,
+  searchApprovedConfessions,
   createNewConfession,
   approveConfession,
   rejectConfession

@@ -7,10 +7,17 @@ const [db, setDb] = useState(null);
 
 const initDB = async () => {
   try {
-    client = await MongoClient.connect(url, {
+    const client = await MongoClient.connect(url, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
+
+    client
+      .db(dbName)
+      .collection("confessions")
+      .createIndex({
+        content: "text"
+      });
 
     setDb(client.db(dbName));
     return true;

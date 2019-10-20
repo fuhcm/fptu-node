@@ -22,7 +22,13 @@ const createServerWrapper = () => {
     bodyParseJson
   ];
 
-  const endMiddlewares = [errorMiddleware];
+  const defaultHandler = (_, res) => {
+    res.status(403).send({
+      message: "You cannot access this endpoint"
+    });
+  };
+
+  const endMiddlewares = [errorMiddleware, defaultHandler];
 
   const server = createServer(app, beginMiddlewares, routes, endMiddlewares);
 
