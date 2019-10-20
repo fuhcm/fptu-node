@@ -11,6 +11,8 @@ const errorMiddleware = (err, _, res, next) => {
       message: "Unexpected error, please contact support!"
     };
 
+    console.error(errorResponse);
+
     res.status(400).send(isDevelopment ? errorResponse : hiddenError);
   };
 
