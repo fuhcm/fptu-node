@@ -19,7 +19,7 @@ const initDB = async () => {
         content: "text"
       });
 
-    setDb(client.db(dbName));
+    setDb(client.db());
     return true;
   } catch (err) {
     throw err;
