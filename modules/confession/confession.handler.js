@@ -139,7 +139,7 @@ const approveConfession = async (req, res) => {
         ...updatedTimestamp()
       }
     },
-    { new: true }
+    { returnOriginal: false }
   );
 
   res.status(value ? 200 : 422).send(value || { message: "Unable to update" });
@@ -162,7 +162,7 @@ const rejectConfession = async (req, res) => {
         ...updatedTimestamp()
       }
     },
-    { new: true }
+    { returnOriginal: false }
   );
 
   res.status(value ? 200 : 422).send(value || { message: "Unable to update" });
@@ -182,7 +182,7 @@ const syncPushID = async (req, res) => {
         ...updatedTimestamp()
       }
     },
-    { new: true }
+    { returnOriginal: false }
   );
 
   res.status(value ? 200 : 422).send(value || { message: "Unable to update" });
