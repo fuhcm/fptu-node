@@ -34,7 +34,9 @@ const getAllSign = async (_, res) => {
     .limit(10)
     .toArray();
 
-  res.send(allSigns);
+  const count = await changeCollection.find().count();
+
+  res.send({ list: allSigns, count });
 };
 
 module.exports = errorHandler({
