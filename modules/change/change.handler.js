@@ -36,7 +36,14 @@ const getAllSign = async (_, res) => {
 
   const count = await changeCollection.find().count();
 
-  res.send({ list: allSigns, count });
+  const hiddenEmailList = allSigns.map(e => {
+    return {
+      email: e.email.replace(/[0-9]/g, "*"),
+      createdAt: e.createdAt
+    };
+  });
+
+  res.send({ list: hiddenEmailList, count });
 };
 
 module.exports = errorHandler({
