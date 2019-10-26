@@ -20,7 +20,7 @@ const getPostDetails = async (req, res) => {
   const postCollection = db.collection("posts");
   const idStr = req.params.id;
   const ObjectID = require("mongodb").ObjectID;
-  const post = await postCollection.find({ _id: ObjectID(idStr) });
+  const post = await postCollection.findOne({ _id: ObjectID(idStr) });
 
   res.status(post ? 200 : 404).send(post || { message: "Not found" });
 };
