@@ -8,9 +8,21 @@ const {
 
 const getAllPosts = async (_, res) => {
   const postCollection = db.collection("posts");
-  const allPosts = await postCollection.find({}).toArray();
+  const allPosts = await postCollection
+    .find({})
+    .limit(10)
+    .toArray();
 
   res.send(allPosts);
+};
+
+const getPostDetails = async (req, res) => {
+  const postCollection = db.collection("posts");
+  const idStr = req.params.id;
+  const ObjectID = require("mongodb").ObjectID;
+  const post = await postCollection.find({ _id: ObjectID(idStr) });
+
+  res.status(post ? 200 : 404).send(post || { message: "Not found" });
 };
 
 const createNewPost = async (req, res) => {
@@ -46,4 +58,9 @@ const updatePost = async (req, res) => {
   res.status(value ? 200 : 422).send(value || { message: "Unable to update" });
 };
 
-module.exports = errorHandler({ getAllPosts, createNewPost, updatePost });
+module.exports = errorHandler({
+  getAllPosts,
+  getPostDetails,
+  createNewPost,
+  updatePost
+});
