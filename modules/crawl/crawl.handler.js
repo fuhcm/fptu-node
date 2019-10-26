@@ -12,4 +12,16 @@ const getCrawl = async (req, res) => {
   res.send(data);
 };
 
-module.exports = errorHandler({ getCrawl });
+const getCrawlDetails = async (req, res) => {
+  const { tag, guid } = req.params;
+  const crawlsCollection = db.collection("crawls");
+
+  const guidStr = `http://daihoc.fpt.edu.vn/?p=${guid}`;
+  const data = await crawlsCollection.findOne({ tag, guid: guidStr });
+
+  data
+    ? res.send(data)
+    : res.status(400).send({ message: "Article not found!" });
+};
+
+module.exports = errorHandler({ getCrawl, getCrawlDetails });
