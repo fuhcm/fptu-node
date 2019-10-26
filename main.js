@@ -14,6 +14,8 @@ const main = async () => {
     server.listen(port, () => console.log(`Server listening on port ${port}!`));
 
     const remoteWorker = require("workers/remote");
+    remoteWorker(__filename);
+
     // Every hour
     cron.schedule("0 * * * *", () => {
       remoteWorker(__filename);
