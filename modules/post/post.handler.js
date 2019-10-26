@@ -42,6 +42,7 @@ const updatePost = async (req, res) => {
   const idStr = req.params.id;
   const { content } = req.body;
   const postCollection = db.collection("posts");
+  const ObjectID = require("mongodb").ObjectID;
 
   const { value } = await postCollection.findOneAndUpdate(
     {
