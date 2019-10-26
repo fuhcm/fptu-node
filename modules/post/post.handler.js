@@ -60,9 +60,22 @@ const updatePost = async (req, res) => {
   res.status(value ? 200 : 422).send(value || { message: "Unable to update" });
 };
 
+const deletePost = async (req, res) => {
+  const idStr = req.params.id;
+  const postCollection = db.collection("posts");
+  const ObjectID = require("mongodb").ObjectID;
+
+  await postCollection.deleteOne({
+    _id: ObjectID(idStr)
+  });
+
+  res.status({ message: "Delete success" });
+};
+
 module.exports = errorHandler({
   getAllPosts,
   getPostDetails,
   createNewPost,
-  updatePost
+  updatePost,
+  deletePost
 });
