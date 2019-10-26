@@ -65,7 +65,7 @@ const deletePost = async (req, res) => {
   const postCollection = db.collection("posts");
   const ObjectID = require("mongodb").ObjectID;
 
-  await postCollection.deleteOne({
+  postCollection.deleteOne({
     _id: ObjectID(idStr)
   });
 
