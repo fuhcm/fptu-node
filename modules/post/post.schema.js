@@ -3,23 +3,23 @@ const validateMiddleware = require("utils/handlers/validate.middleware");
 
 const postSchema = Joi.object({
   title: Joi.string()
-    .min(10)
+    .min(20)
     .required(),
   categories: [Joi.string().optional(), Joi.allow(null)],
   thumbnail: Joi.string()
     .min(10)
     .required(),
   description: Joi.string()
-    .min(10)
+    .min(50)
     .required(),
   content: Joi.string()
-    .min(10)
+    .min(200)
     .required()
 });
 
 const putSchema = Joi.object({
   content: Joi.string()
-    .min(10)
+    .min(200)
     .required()
 });
 
