@@ -17,12 +17,12 @@ const initDB = async () => {
 
 const worker = async () => {
   const db = await initDB();
-  const crawlsCollection = db.collection("crawls");
+  const crawlCollection = db.collection("crawls");
 
   const data = await getFeed("https://daihoc.fpt.edu.vn/feed");
   try {
     const taggedData = data.map(e => ({ ...e, tag: "fpt" }));
-    await crawlsCollection.insertMany(taggedData);
+    await crawlCollection.insertMany(taggedData);
   } catch (err) {}
 
   parentPort.postMessage(true);
