@@ -69,16 +69,16 @@ const searchApprovedConfessions = async (req, res) => {
 
   const handleSearch = async keyword => {
     const confessions = await confessionCollection
-      // .find({
-      //   status: 1,
-      //   $text: {
-      //     $search: /^keyword$/i
-      //   }
-      // })
       .find({
         status: 1,
-        content: keyword
+        $text: {
+          $search: /^keyword$/i
+        }
       })
+      // .find({
+      //   status: 1,
+      //   content: keyword
+      // })
       .sort({ createdAt: -1 })
       .limit(50)
       .toArray();
