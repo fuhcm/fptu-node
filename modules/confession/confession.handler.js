@@ -77,7 +77,7 @@ const searchApprovedConfessions = async (req, res) => {
       // })
       .find({
         status: 1,
-        content: { $regex: keyword }
+        content: { $regex: keyword, $options: "i" }
       })
       .sort({ createdAt: -1 })
       .limit(50)
