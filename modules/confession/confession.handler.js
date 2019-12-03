@@ -93,7 +93,8 @@ const searchApprovedConfessions = async (req, res) => {
 
 const createNewConfession = async (req, res) => {
   const confessionCollection = db.collection("confessions");
-  const newConfession = req.body;
+  const noCaptcha = ({ captcha, ...rest }) => rest;
+  const newConfession = noCaptcha(req.body);
   const defaultProperties = {
     status: 0,
     approver: null,
