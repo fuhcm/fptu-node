@@ -1,6 +1,6 @@
 const { parentPort } = require("worker_threads");
 
-const getFeed = require("utils/rss2json/rss2json");
+const getFeed = require("../utils/rss2json/rss2json");
 
 const initDB = async () => {
   const MongoClient = require("mongodb").MongoClient;
