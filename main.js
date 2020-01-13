@@ -1,10 +1,10 @@
 require("app-module-path/register");
 require("dotenv").config();
 
-const { isMainThread } = require("worker_threads");
 const app = require("server/app");
 const initDB = require("configs/mongodb").initDB;
 const cron = require("node-cron");
+const worker = require("workers/worker");
 
 const main = async () => {
   try {
@@ -13,15 +13,12 @@ const main = async () => {
     const port = process.env.PORT || 5000;
     server.listen(port, () => console.log(`Server listening on port ${port}!`));
 
-    const remoteWorker = require("workers/remote");
-    remoteWorker(__filename);
-
     // Call on first launch
-    remoteWorker(__filename);
+    worker();
 
     // Every hour
     cron.schedule("0 * * * *", () => {
-      remoteWorker(__filename);
+      worker();
     });
   } catch (err) {
     console.error(err);
@@ -29,9 +26,4 @@ const main = async () => {
   }
 };
 
-if (isMainThread) {
-  main();
-} else {
-  const spawnWorker = require("workers/worker");
-  spawnWorker();
-}
+main();

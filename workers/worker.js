@@ -1,6 +1,4 @@
-const { parentPort } = require("worker_threads");
-
-const getFeed = require("../utils/rss2json/rss2json");
+const getFeed = require("utils/rss2json/rss2json");
 
 const initDB = async () => {
   const MongoClient = require("mongodb").MongoClient;
@@ -16,17 +14,17 @@ const initDB = async () => {
 };
 
 const worker = async () => {
-  const db = await initDB();
-  const crawlCollection = db.collection("crawls");
-
-  const data = await getFeed("https://daihoc.fpt.edu.vn/feed");
   try {
+    const db = await initDB();
+    const crawlCollection = db.collection("crawls");
+    const data = await getFeed("https://daihoc.fpt.edu.vn/feed");
     const taggedData = data.map(e => ({ ...e, tag: "fpt" }));
     await crawlCollection.insertMany(taggedData);
-  } catch (err) {}
-
-  parentPort.postMessage(true);
-  console.log("Fetched RSS at: ", new Date().toISOString());
+    console.log("Fetched RSS at: ", new Date().toISOString());
+  } catch (err) {
+    console.error("Fetch error, maybe duplicated");
+    console.error("Fetch RSS failed at: ", new Date().toISOString());
+  }
 };
 
 module.exports = worker;
