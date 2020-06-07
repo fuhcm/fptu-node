@@ -18,6 +18,16 @@ const postSchema = Joi.object({
 });
 
 const putSchema = Joi.object({
+  title: Joi.string()
+    .min(20)
+    .required(),
+  categories: [Joi.string().optional(), Joi.allow(null)],
+  thumbnail: Joi.string()
+    .min(10)
+    .required(),
+  description: Joi.string()
+    .min(50)
+    .required(),
   content: Joi.string()
     .min(200)
     .required()

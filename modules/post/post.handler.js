@@ -40,7 +40,7 @@ const createNewPost = async (req, res) => {
 
 const updatePost = async (req, res) => {
   const idStr = req.params.id;
-  const { content } = req.body;
+  const { title, categories, description, thumbnail, content } = req.body;
   const postCollection = db.collection("posts");
   const ObjectID = require("mongodb").ObjectID;
 
@@ -50,7 +50,7 @@ const updatePost = async (req, res) => {
     },
     {
       $set: {
-        content,
+        title, categories, description, thumbnail, content,
         ...updatedTimestamp()
       }
     },
