@@ -20,7 +20,13 @@ const getCrawlDetails = async (req, res) => {
   const crawlCollection = db.collection("crawls");
 
   const guidStr = `https://daihoc.fpt.edu.vn/?p=${guid}`;
-  const data = await crawlCollection.findOne({ tag, guid: guidStr });
+  const guidStrAlternative = `http://daihoc.fpt.edu.vn/?p=${guid}`;
+  const data = await crawlCollection.findOne({
+    $or: [
+      { tag, guid: guidStr },
+      { tag, guid: guidStrAlternative },
+    ]
+  });
 
   data
     ? res.send(data)
