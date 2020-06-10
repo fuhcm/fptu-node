@@ -3,11 +3,12 @@ const errorHandler = require("utils/handlers/error.handler");
 
 const getCrawl = async (req, res) => {
   const { tag } = req.params;
+  const { load } = req.query;
   const crawlCollection = db.collection("crawls");
   const data = await crawlCollection
     .find({ tag })
     .sort({ $natural: -1 })
-    .limit(100)
+    .limit(parseInt(load) || 100)
     .toArray();
   data.reverse()
 
