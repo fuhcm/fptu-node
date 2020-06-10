@@ -9,8 +9,7 @@ const initDB = async () => {
     useUnifiedTopology: true
   });
 
-  const db = client.db();
-  return db;
+  return client.db();
 };
 
 const worker = async () => {
@@ -19,6 +18,7 @@ const worker = async () => {
     const crawlCollection = db.collection("crawls");
     const data = await getFeed("https://daihoc.fpt.edu.vn/feed");
     const taggedData = data.map(e => ({ ...e, tag: "fpt" }));
+    console.log(taggedData);
     await crawlCollection.insertMany(taggedData);
     console.log("Fetched RSS at: ", new Date().toISOString());
   } catch (err) {
