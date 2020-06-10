@@ -14,16 +14,16 @@ const main = async () => {
     server.listen(port, () => console.log(`Server listening on port ${port}!`));
 
     // Call on first launch
-    worker();
+    await worker();
 
     // Every hour
-    cron.schedule("0 * * * *", () => {
-      worker();
-    });
+    cron.schedule("0 * * * *", async () => {
+      await worker();
+    }, null);
   } catch (err) {
     console.error(err);
     process.exit(1);
   }
 };
 
-main();
+main().then(() => () => {});

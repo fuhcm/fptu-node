@@ -22,6 +22,7 @@ const worker = async () => {
     await crawlCollection.insertMany(taggedData);
     console.log("Fetched RSS at: ", new Date().toISOString());
   } catch (err) {
+    console.error("Error: ", err.toString());
     console.error("Fetch error, maybe duplicated");
     console.error("Fetch RSS failed at: ", new Date().toISOString());
   }

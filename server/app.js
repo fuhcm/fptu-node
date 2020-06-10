@@ -30,9 +30,7 @@ const createServerWrapper = () => {
 
   const endMiddlewares = [errorMiddleware, defaultHandler];
 
-  const server = createServer(app, beginMiddlewares, routes, endMiddlewares);
-
-  return server;
+  return createServer(app, beginMiddlewares, routes, endMiddlewares);
 };
 
 module.exports.createServer = createServerWrapper;
