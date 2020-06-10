@@ -6,8 +6,8 @@ const getCrawl = async (req, res) => {
   const crawlCollection = db.collection("crawls");
   const data = await crawlCollection
     .find({ tag })
-    .sort({ $natural: -1 })
-    .limit(50)
+    .sort({ $natural: 1 })
+    .limit(100)
     .toArray();
 
   res.send(data);
