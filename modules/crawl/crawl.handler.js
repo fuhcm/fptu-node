@@ -6,9 +6,10 @@ const getCrawl = async (req, res) => {
   const crawlCollection = db.collection("crawls");
   const data = await crawlCollection
     .find({ tag })
-    .sort({ $natural: 1 })
+    .sort({ $natural: -1 })
     .limit(100)
     .toArray();
+  data.reverse()
 
   res.send(data);
 };
@@ -17,7 +18,7 @@ const getCrawlDetails = async (req, res) => {
   const { tag, guid } = req.params;
   const crawlCollection = db.collection("crawls");
 
-  const guidStr = `http://daihoc.fpt.edu.vn/?p=${guid}`;
+  const guidStr = `https://daihoc.fpt.edu.vn/?p=${guid}`;
   const data = await crawlCollection.findOne({ tag, guid: guidStr });
 
   data
