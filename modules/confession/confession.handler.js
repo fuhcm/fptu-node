@@ -93,6 +93,15 @@ const searchApprovedConfessions = async (req, res) => {
 
 const createNewConfession = async (req, res) => {
   const confessionCollection = db.collection("confessions");
+  const captcha = req.body.captcha;
+  const captchaSecret = process.env.CAPTCHA || 'NONE';
+  const { data } = await axios.get(`https://www.google.com/recaptcha/api/siteverify?secret=${captchaSecret}&response=${captcha}`);
+  if (!data || !data.success) {
+    res.status(400).send({
+      message: 'Fuck you bro'
+    });
+  }
+
   const noCaptcha = ({ captcha, ...rest }) => rest;
   const newConfession = noCaptcha(req.body);
   const defaultProperties = {
