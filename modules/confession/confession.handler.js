@@ -101,6 +101,7 @@ const createNewConfession = async (req, res) => {
     res.status(400).send({
       message: 'Fuck you bro'
     });
+    return;
   }
 
   const noCaptcha = ({ captcha, ...rest }) => rest;
