@@ -1,5 +1,6 @@
 const db = require("configs/mongodb").getDB();
 const errorHandler = require("utils/handlers/error.handler");
+const axios = require("axios");
 
 const {
   createdTimestamp,
